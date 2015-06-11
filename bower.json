@@ -1,0 +1,46 @@
+{
+  "name": "syl.portfolio",
+  "version": "1.0.0",
+  "authors": [
+    "Sylvester Aswin <sylvester.aswinstanley@gmail.com>"
+  ],
+  "description": "This is personal portfolio",
+  "keywords": [
+    "sylvester",
+    "aswin"
+  ],
+  "directory": "common/comps",
+  "license": "MIT",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "scripts": {
+    "postinstall": "grunt bowerRequirejs"
+  },
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "underscore": "~1.8.3",
+    "backbone": "~1.2.0",
+    "jquery-easing-original": "~1.3.2",
+    "jquery-browser-detection": "~0.3.3",
+    "WOW": "~1.1.2",
+    "waypoints": "~3.1.1",
+    "jquery.nicescroll": "~3.6.0",
+    "bootstrap-sweetalert": "~0.4.3",
+    "normalize.css": "~3.0.3",
+    "fontawesome": "~4.3.0",
+    "animate.css": "~3.3.0",
+    "text": "~2.0.14",
+    "modernizr": "~2.8.3",
+    "requirejs": "~2.1.17",
+    "isotope": "~2.2.0"
+  }
+}
