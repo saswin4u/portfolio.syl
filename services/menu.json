@@ -1,0 +1,29 @@
+{
+    "contact": {
+        "email": "sylvester.aswinstanley@gmail.com",
+        "address": "Bangalore, India",
+        "social": [{
+            "icnCls": "fa-facebook",
+            "link": "http://www.facebook.com/sylvester.aswin"
+        }, {
+            "icnCls": "fa-twitter",
+            "link": "https://twitter.com/sylvesteraswin"
+        }]
+    },
+    "menus": [{
+        "name": "Home",
+        "url": "#/home"
+    }, {
+        "name": "AboutMe",
+        "url": "#/about"
+    }, {
+        "name": "Photography",
+        "url": "#/iamsyl"
+    }, {
+        "name": "Blog",
+        "url": "#/blog"
+    }, {
+        "name": "Contact",
+        "url": "#/contact"
+    }]
+}

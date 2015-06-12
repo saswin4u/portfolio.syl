@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'helpers.util', 'views/comps/loader'], function($, _, Backbone, Utils, LoaderView) {
+define(['jquery', 'underscore', 'backbone', 'helpers/util', 'views/comps/loader'], function($, _, Backbone, Utils, LoaderView) {
     var BaseView = Backbone.View.extend({
         reset: function() {
             var view = this,

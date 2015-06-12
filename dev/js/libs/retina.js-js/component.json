@@ -1,0 +1,5 @@
+{
+  "name": "retina.js-js",
+  "version": "1.0.2",
+  "main": ["./src/retina.js", "./src/retina.less"]
+}

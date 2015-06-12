@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                     optimize: 'none',
                     modules: [{
                         name: 'configs',
-                        include: ['requirejs', 'text', 'jquery', 'underscore', 'backbone', 'jeasing', 'jdetect'/*, 'isotope', 'WOW', 'waypoints', 'jscroll', 'owl', 'hammerjs'*/],
+                        include: ['requirejs', 'text', 'jquery', 'underscore', 'backbone', 'bootstrap' /*, 'jeasing', 'jdetect', 'isotope', 'WOW', 'waypoints', 'jscroll', 'owl', 'hammerjs'*/ ],
                     }, {
                         name: 'app',
                         exclude: ['configs'],
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: './dist/js',
-                    src: ['*.js', '!*.min.js'],
+                    src: ['*.js','!*.min.js'],
                     dest: './dist/js',
                     ext: '.min.js'
                 }]
@@ -45,42 +45,60 @@ module.exports = function(grunt) {
             all: {
                 rjsConfig: "./dev/js/configs.js",
                 options: {
-                    exclude: ['jquery-easing-original', 'jquery-browser-detection', 'isotope', 'WOW', 'waypoints', 'jquery.nicescroll', 'owl.carousel', 'materialize', 'bootstrap-sweetalert', 'normalize.css', 'fontawesome', 'animate.css', 'modernizr'],
+                    exclude: ['animate.css', 'fontawesome', 'loaders', 'modernizr', 'normalize.css', 'bootstrap', 'retina.js-js'],
                     baseUrl: './dev/js'
                 }
             }
         },
         bower_concat: {
             all: {
+                dest: './dist/js/libs.js',
                 cssDest: './dev/css/core.css',
-                exclude: ['modernizr', 'requirejs', 'jquery', 'underscore', 'backbone', 'text'],
+                exclude: ['modernizr', 'requirejs', 'jquery', 'underscore', 'backbone', 'text']
             }
         },
-        clean : ['./dist/js/configs', './dist/js/helpers', './dist/js/libs', './dist/js/routers', './dist/js/views'],
+        clean: ['./dist/built.txt', './dist/js/configs', './dist/js/helpers', './dist/js/libs', './dist/js/routers', './dist/js/views'],
+        compass: {
+            dev: {
+                options: {
+                    http_path: '/',
+                    sassDir: './dev/sass',
+                    cssDir: './dev/css',
+                    imageDir: './dev/img',
+                    relativeAssets: true
+                }
+            }
+        },
         cssmin: {
-            prod : {
-                files : [{
-                    expand : true,
-                    cwd : './dev/css',
-                    src : ['*.css', '!*.min.css'],
-                    dest : './dev/css',
-                    ext : '.min.css'
+            prod: {
+                files: [{
+                    expand: true,
+                    cwd: './dev/css',
+                    src: ['*.css', '!*.min.css'],
+                    dest: './dev/css',
+                    ext: '.min.css'
                 }]
             }
         },
         copy: {
-          fonts: {
-            cwd: './dev/fonts/',
-            src: '**/*',
-            dest: './dist/fonts',
-            expand: true
-          }, 
-          css : {
-            cwd : './dev/css',
-            src: '**/*',
-            dest: './dist/css',
-            expand: true
-          }
+            fonts: {
+                cwd: './dev/fonts/',
+                src: '**/*',
+                dest: './dist/fonts',
+                expand: true
+            },
+            images: {
+                cwd: './dev/img/',
+                src: '**/*',
+                dest: './dist/img',
+                expand: true
+            },
+            css: {
+                cwd: './dev/css',
+                src: '**/*',
+                dest: './dist/css',
+                expand: true
+            }
         },
         connect: {
             server: {
@@ -97,6 +115,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-compass'); // This task requires you to have Ruby, Sass, and Compass >=1.0.1 installed.
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -106,20 +125,24 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-bower-requirejs');
 
     // Default Tasks
-    grunt.registerTask('default', ['bowerRequirejs', 'corebuild', 'jsdev', 'cssprod', 'copyfiles', 'clean']);
+    grunt.registerTask('default', ['bowerRequirejs', 'corebuild', 'cssbuild', 'jsbuild', 'copyfiles', 'clean']);
 
     //Build the Dev JS file
-    grunt.registerTask('jsdev', ['requirejs:dev', 'uglify:prod']);
+    grunt.registerTask('jsbuild', ['requirejs:dev', 'uglify:prod']);
     // grunt.registerTask('jsdev', ['requirejs:dev']);
 
     //Core build
     grunt.registerTask('corebuild', 'bower_concat');
 
     // Copy
-    grunt.registerTask('copyfiles', ['copy:fonts']);
+    grunt.registerTask('copyfiles', ['copy:fonts', 'copy:images', 'copy:css']);
 
+    //Build APP CSS
+    grunt.registerTask('cssdev', ['compass:dev']);
     //Minify CSS
     grunt.registerTask('cssprod', ['cssmin:prod']);
+    //Combine CSS build
+    grunt.registerTask('cssbuild', ['cssdev', 'cssprod']);
 
     // Server
     grunt.registerTask('server', ['connect:server']);

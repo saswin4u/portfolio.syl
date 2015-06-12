@@ -10,8 +10,8 @@ require.config({
         collections: "collections",
         templates: "templates",
         helpers: "helpers",
-        jeasing: "libs/jquery-easing-original/jquery.easing",
-        jdetect: "libs/jquery-browser-detection/src/browser-detection"
+        bootstrap: "libs/bootstrap/dist/js/bootstrap",
+        "retina.js-js": "libs/retina.js-js/src/retina"
     },
     shim: {
 

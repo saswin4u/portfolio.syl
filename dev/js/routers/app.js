@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'views/index', 'views/pages/error', 'views/pages/404'], function($, _, Backbone, Utils, Routes, IndexView, ErrorPage, NotFoundPage) {
+define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'views/index', 'views/pagecomps/header', 'views/pages/error', 'views/pages/404'], function($, _, Backbone, Utils, Routes, IndexView, HeaderView, ErrorPage, NotFoundPage) {
     var hasInit = false;
     var AppRouter = Backbone.Router.extend({
         currentView: null,
@@ -16,8 +16,9 @@ define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'v
         init: function() {
             if (!hasInit) {
                 //Append Header
-
+                SylAppView.loadContent(HeaderView);
                 //Append Index View
+                SylAppView.loadContent(IndexView, true);
 
                 //Append Footer
             }
@@ -68,18 +69,18 @@ define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'v
                 router.currentView = view;
             }
 
-            if(_.isFunction(view.switchToAction)){
+            if (_.isFunction(view.switchToAction)) {
                 view.switchToAction(action);
             }
         },
-        loadCanvasContent : function(c){
+        loadCanvasContent: function(c) {
             IndexView.loadCanvasContent(c);
         },
-        showError : function(errorPage){
+        showError: function(errorPage) {
             var router = this;
 
-            if(errorPage){
-                if(!(errorPage instanceof Backbone.View)){
+            if (errorPage) {
+                if (!(errorPage instanceof Backbone.View)) {
                     errorPage = new ErrorPage(errorPage);
                 }
 
@@ -87,10 +88,13 @@ define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'v
                 Utils.navigate(Routes.error, false);
             }
         },
-        invalidPathHandler : function(cfg){
+        invalidPathHandler: function(cfg) {
             var router = this;
 
-            router.showError(new NotFoundPage(cfg));
+            console.log("ErrorPage");
+            // router.showError(new NotFoundPage(cfg));
         }
     });
+
+    return new AppRouter();
 });

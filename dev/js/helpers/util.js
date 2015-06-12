@@ -1,4 +1,8 @@
 define(['underscore', 'jquery', 'backbone'], function(_, $, Backbone){
+    var trimLeft = /^\s+/,
+        trimRight = /\s+$/,
+        trim = String.prototype.trim,
+        rquery = /\?/;
     /**
      * @function trim
      *
