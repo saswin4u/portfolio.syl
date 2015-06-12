@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                     optimize: 'none',
                     modules: [{
                         name: 'configs',
-                        include: ['requirejs', 'text', 'jquery', 'underscore', 'backbone', 'jeasing', 'jdetect', 'isotope', 'WOW', 'waypoints', 'jscroll', 'owl', 'hammerjs'],
+                        include: ['requirejs', 'text', 'jquery', 'underscore', 'backbone', 'jeasing', 'jdetect'/*, 'isotope', 'WOW', 'waypoints', 'jscroll', 'owl', 'hammerjs'*/],
                     }, {
                         name: 'app',
                         exclude: ['configs'],
@@ -52,8 +52,20 @@ module.exports = function(grunt) {
         },
         bower_concat: {
             all: {
-                cssDest: './dist/css/core.css',
+                cssDest: './dev/css/core.css',
                 exclude: ['modernizr', 'requirejs', 'jquery', 'underscore', 'backbone', 'text'],
+            }
+        },
+        clean : ['./dist/js/configs', './dist/js/helpers', './dist/js/libs', './dist/js/routers', './dist/js/views'],
+        cssmin: {
+            prod : {
+                files : [{
+                    expand : true,
+                    cwd : './dev/css',
+                    src : ['*.css', '!*.min.css'],
+                    dest : './dev/css',
+                    ext : '.min.css'
+                }]
             }
         },
         copy: {
@@ -61,6 +73,12 @@ module.exports = function(grunt) {
             cwd: './dev/fonts/',
             src: '**/*',
             dest: './dist/fonts',
+            expand: true
+          }, 
+          css : {
+            cwd : './dev/css',
+            src: '**/*',
+            dest: './dist/css',
             expand: true
           }
         },
@@ -79,13 +97,16 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+
 
     grunt.loadNpmTasks('grunt-bower-concat');
     grunt.loadNpmTasks('grunt-bower-requirejs');
 
     // Default Tasks
-    grunt.registerTask('default', ['bowerRequirejs', 'corebuild', 'jsdev', 'copyfiles']);
+    grunt.registerTask('default', ['bowerRequirejs', 'corebuild', 'jsdev', 'cssprod', 'copyfiles', 'clean']);
 
     //Build the Dev JS file
     grunt.registerTask('jsdev', ['requirejs:dev', 'uglify:prod']);
@@ -95,7 +116,10 @@ module.exports = function(grunt) {
     grunt.registerTask('corebuild', 'bower_concat');
 
     // Copy
-  grunt.registerTask('copyfiles', ['copy:fonts']);
+    grunt.registerTask('copyfiles', ['copy:fonts']);
+
+    //Minify CSS
+    grunt.registerTask('cssprod', ['cssmin:prod']);
 
     // Server
     grunt.registerTask('server', ['connect:server']);
