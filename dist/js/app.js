@@ -187,12 +187,16 @@ define('views/comps/loader',['jquery', 'underscore', 'backbone'], function($, _,
                 view.type = cfg.type;
             }
 
+            if(!view.type){
+                view.type = 'circle';
+            }
+
             view.loaderCfg = {
                 circle : $('<div class="loader"><div class="loader-inner ball-clip-rotate"><div></div></div></div>'),
                 pacman: $('<div class="loader"><div class="loader-inner pacman"><div></div><div></div><div></div><div></div><div></div></div></div>')
             };
 
-            view.$container = (cfg.type && view.loaderCfg[cfg.type]) || view.loaderCfg.circle;
+            view.$container = (view.type && view.loaderCfg[view.type]) || view.loaderCfg.circle;
 
             view.$title = $('<p class="title text-center"/>');
             view.$message = $('<p class="sub-title text-center"/>');
@@ -472,6 +476,10 @@ define('views/pagecomps/header',['jquery', 'underscore', 'backbone', 'views/page
     var HeaderView = BaseView.extend({
         tagName : 'header',
         className: '',
+        events:{
+            'click #open-button' : 'openButtonSection',
+            'click #close-button' : 'openButtonSection',
+        },
         initialize : function(cfg){
             var view = this;
 
@@ -486,18 +494,23 @@ define('views/pagecomps/header',['jquery', 'underscore', 'backbone', 'views/page
             view.$container = $('<div class="container"/>');
             view.$el.append(view.$container);
 
-            view.$logo = $('<div class="logo"> <a href="#!/home"> <img src="dist/img/logo.png" data-at2x="dist/img/logo@2x.png" alt="logo"> </a> </div>');
+            view.$logo = $('<div class="logo"> <a href="#!/home"> <img src="dist/img/logo.png" data-at2x="dist/img/logo@2x.png" alt="logo" /> </a> </div>');
             view.$menuIndicator = $('<button class="main-menu-indicator" id="open-button"> <span></span> </button>');
 
             view.render();
             view.initAffix();
         },
+        openButtonSection : function(){
+            //Toggle Class on the Main App View
+            SylAppView.$el.toggleClass('show-menu');
+        },
         preRender: function(){
             var view = this;
 
             view.addContent(view.$logo);
-
             view.addContent(view.$menuIndicator);
+
+            // view.addContent(new MenuView());
         },
         render: function(){
             var view = this;
@@ -516,6 +529,287 @@ define('views/pagecomps/header',['jquery', 'underscore', 'backbone', 'views/page
     });
 
     return new HeaderView();
+});
+define('configs/url',{
+    menus : '/services/menu.json'
+});
+define('configs/app',{
+    globalAjaxTimeout : 120000,
+    globalAjaxCache : false    
+});
+define('helpers/datafactory',['jquery', 'underscore', 'backbone', 'configs/app'], function($, _, Backbone, AppConfig) {
+    var Base = {
+        rel: null,
+        fetch: function(options) {
+            var mc = this,
+                r;
+
+            options = options || {};
+            options.cache = options.cache || AppConfig.globalAjaxCache;
+            options.timeout = options.timeout || AppConfig.globalAjaxTimeout;
+
+            if (mc instanceof Backbone.Collection) {
+                r = Backbone.Collection.prototype.fetch.call(mc, options);
+            } else {
+                r = Backbone.Model.prototype.fetch.call(mc, options);
+            }
+
+            return r;
+        }
+    };
+
+    var BaseModel = Backbone.Model.extend(Base);
+
+    var BaseCollection = Backbone.Collection.extend(_.extend({
+        parse: function(response, xhr) {
+            var collection = this;
+
+            collection.dataCache = $.extend({}, response);
+        }
+    }, Base));
+
+    return {
+        BaseModel: BaseModel,
+        BaseCollection: BaseCollection
+    };
+});
+define('models/menu',['underscore', 'backbone', 'configs/url', 'helpers/datafactory'], function(_, Backbone, Urls, DF){
+    var MenuModel = DF.BaseModel.extend({
+        rel : 'menu',
+        urlRoot : Urls.menus
+    });
+
+    return new MenuModel();
+});
+
+define('text!templates/item.tpl',[],function () { return '<a href="#{{ url }}">{{ name }}</a>';});
+
+define('views/pagecomps/menu/item',['jquery', 'underscore', 'backbone', 'views/pagecomps/base', 'text!templates/item.tpl', 'helpers/util'], function($, _, Backbone, BaseView, LinkTpl, Utils) {
+    var ItemView = BaseView.extend({
+        tagName : 'li',
+        template : _.template(LinkTpl),
+        events : {
+            'click' : 'onItemClick'
+        },
+        initialize: function(cfg){
+            var view = this;
+
+            if(cfg){
+                view.parentView = cfg.parentView;
+                view.name = cfg.name;
+                view.url = cfg.url;
+            }
+
+            view.$container  = view.$el;
+
+            view.render();
+
+            return view;
+        },
+        render: function(){
+            var view = this,
+                item = view.template({
+                    name : view.name,
+                    url : view.url || ''
+                });
+
+            view.addContent(item);
+
+            return view;
+        },
+        onItemClick:function(ev){
+            var view= this,
+                parentView = view.parentView,
+                hash = view.url;
+
+            ev && ev.preventDefault();
+
+            Utils.navigate(hash);
+        }
+    });
+
+    return ItemView;
+});
+define('views/pagecomps/menu/items',['jquery', 'underscore', 'backbone', 'views/pagecomps/base', 'views/pagecomps/menu/item'], function($, _, Backbone, BaseView, ItemView) {
+    var ItemsView = BaseView.extend({
+        tagName: 'ul',
+        initialize: function(cfg) {
+            var view = this;
+
+            if (cfg) {
+                view.items = cfg.items;
+                view.cls = cfg.cls;
+            }
+
+            view.$el.addClass(view.cls || '');
+            view.menuItemViews = [];
+
+            view.render();
+
+            return view;
+        },
+        render: function() {
+            var view = this,
+                items = view.items,
+                item;
+
+            view.addItems(items);
+
+            return view;
+        },
+        addItems: function(items) {
+            var view = this;
+
+            _.each(items, function(itemCfg, index) {
+                view.addItem(itemCfg);
+            });
+        },
+        addItem: function(item) {
+            var view = this,
+                mi;
+
+            item.parentView = view;
+            mi = new ItemView(item);
+
+            view.menuItemViews.push(mi);
+            view.addContent(mi);
+
+            return view;
+        },
+        getItems : function(){
+            var view = this,
+                itemViews = view.menuItemViews;
+
+            return itemViews;
+        }
+    });
+
+    return ItemsView;
+});
+define('views/pagecomps/menu/nav',['jquery', 'underscore', 'backbone', 'views/pagecomps/base', 'views/pagecomps/menu/items'], function($, _, Backbone, BaseView, ItemsView) {
+    var NavView = BaseView.extend({
+        tagName : 'nav',
+        className : 'menu',
+        initialize : function(cfg){
+            var view = this;
+
+            if(cfg){
+
+            }
+
+            view.$menuList = $('<div class="menu-list" />');
+
+            view.$el.append(view.$menuList);
+
+            // view.$container = view.$el;
+
+            view.render();
+
+            return view;
+        },
+        render: function(){
+            var view = this,
+                menuItems = view.model.get('menus'),
+                itemsView = new ItemsView({
+                    items : menuItems
+                });
+
+            view.$menuList.append(itemsView.$el);
+
+            return view;
+        }
+    });
+
+    return NavView;
+});
+define('views/pagecomps/menu/menu',['jquery', 'underscore', 'backbone', 'views/pagecomps/base', 'models/menu', 'views/pagecomps/menu/nav'], function($, _, Backbone, BaseView, MenuModel, NavView) {
+    var MenuView = BaseView.extend({
+        tagName: 'div',
+        className: 'menu-wrap',
+        model: MenuModel,
+        initialize: function(cfg) {
+            var view = this;
+
+            if (cfg) {
+
+            }
+
+            view.$container = view.$el;
+
+            //Wrap everything
+            view.$menuContent = $('<div class="menu-content" />');
+            //Container Wrapper
+            view.$container = $('<div class="container" />');
+            //Content wrapper
+            view.$row = $('<div class="row" />');
+            //Navigation wrapper
+            view.$nav = $('<div class="navigation" />');
+            //Close Button
+            view.$closeEl = $('<span class="close-menu fa fa-close" id="close-button"></span>');
+            //Nav Logo
+            view.$navLogo = $('<div class="menu-logo hidden-xs"><img src="dist/img/logo_white.png" data-at2x="dist/img/logo_white@2x.png" alt="logo"></div>');
+            //Menu Wrapper
+            view.$elAll = $('<div class="col-md-8 col-md-offset-2 col-xs-12" />');
+            //Menu 2 columns
+            view.$elMenu = $('<div class="col-md-6 col-sm-6" />');
+            view.$elContact = $('<div class="col-md-6 col-sm-6 hidden-xs" />');
+
+            view.listenTo(view.model, 'sync', view.render);
+            view.listenTo(view.model, 'model', view.onError);
+
+            view.load();
+
+            return view;
+        },
+        load: function() {
+            var view = this,
+                model = view.model;
+
+            view.setLoading(true);
+
+            model && model.fetch();
+        },
+        preRender: function() {
+            var view = this;
+
+            view.$elAll.append(view.$elMenu)
+                .append(view.$elContact);
+
+            view.$nav.append(view.$closeEl)
+                .append(view.$navLogo);
+
+            view.$row.append(view.$nav)
+                .append(view.$elAll);
+
+            view.$container.append(view.$row);
+
+            view.$menuContent.append(view.$container);
+
+            //Finall append everything
+            view.$el.append(view.$menuContent);
+
+        },
+        onError: function() {
+            console.log('Errored out Bitch!!');
+        },
+        render: function() {
+            var view = this,
+                nav = new NavView({
+                    model: view.model
+                });
+
+            view.preRender();
+
+            view.setLoading(false);
+
+            // nav.model = view.model;
+            view.$elMenu.append(nav.$el);
+
+            return view;
+        }
+    });
+
+    return new MenuView();
 });
 define('views/comps/button',['jquery', 'underscore', 'helpers/util', 'views/pagecomps/base'], function($, _, Utils, BaseView) {
     var BaseButton = BaseView.extend({
@@ -691,7 +985,7 @@ define('views/pages/error',['jquery', 'underscore', 'backbone', 'views/pagecomps
 ;
 define("views/pages/404", function(){});
 
-define('routers/app',['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'views/index', 'views/pagecomps/header', 'views/pages/error', 'views/pages/404'], function($, _, Backbone, Utils, Routes, IndexView, HeaderView, ErrorPage, NotFoundPage) {
+define('routers/app',['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'views/index', 'views/pagecomps/header', 'views/pagecomps/menu/menu', 'views/pages/error', 'views/pages/404'], function($, _, Backbone, Utils, Routes, IndexView, HeaderView, MenuView, ErrorPage, NotFoundPage) {
     var hasInit = false;
     var AppRouter = Backbone.Router.extend({
         currentView: null,
@@ -708,8 +1002,10 @@ define('routers/app',['jquery', 'underscore', 'backbone', 'helpers/util', 'confi
         },
         init: function() {
             if (!hasInit) {
+                //Append Menu
+                SylAppView.loadContent(MenuView);
                 //Append Header
-                SylAppView.loadContent(HeaderView);
+                SylAppView.loadContent(HeaderView, true);
                 //Append Index View
                 SylAppView.loadContent(IndexView, true);
 
@@ -815,7 +1111,7 @@ define('views/pages/home',['jquery', 'underscore', 'backbone', 'views/index'], f
 
             page.reset();
 
-            // IndexView.setLoading(true);
+            IndexView.setLoading(true);
         },
         canvasContent: function(){
             var page = this;

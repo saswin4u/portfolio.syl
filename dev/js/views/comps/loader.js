@@ -12,12 +12,16 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone){
                 view.type = cfg.type;
             }
 
+            if(!view.type){
+                view.type = 'circle';
+            }
+
             view.loaderCfg = {
                 circle : $('<div class="loader"><div class="loader-inner ball-clip-rotate"><div></div></div></div>'),
                 pacman: $('<div class="loader"><div class="loader-inner pacman"><div></div><div></div><div></div><div></div><div></div></div></div>')
             };
 
-            view.$container = (cfg.type && view.loaderCfg[cfg.type]) || view.loaderCfg.circle;
+            view.$container = (view.type && view.loaderCfg[view.type]) || view.loaderCfg.circle;
 
             view.$title = $('<p class="title text-center"/>');
             view.$message = $('<p class="sub-title text-center"/>');

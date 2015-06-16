@@ -74,7 +74,158 @@ body {
   overflow-x: hidden;
 }
 
-/* line 5, ../sass/app.scss */
+/* =Typography
+-------------------------------------------------------------- */
+/* line 3, ../sass/_typography.scss */
+a {
+  color: #56c8d4;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+/* line 9, ../sass/_typography.scss */
+a:focus {
+  outline: 0;
+}
+
+/* line 13, ../sass/_typography.scss */
+a:hover, a:focus {
+  color: #56c8d4;
+  text-decoration: none;
+}
+
+/* line 18, ../sass/_typography.scss */
+a, a:visited {
+  font-weight: 400;
+  text-decoration: none;
+}
+
+/* line 23, ../sass/_typography.scss */
+em {
+  font-style: italic;
+}
+
+/* line 27, ../sass/_typography.scss */
+strong {
+  font-weight: 700;
+}
+
+/* line 31, ../sass/_typography.scss */
+small {
+  font-size: 0.8em;
+}
+
+/* line 35, ../sass/_typography.scss */
+p {
+  color: #111111;
+  line-height: 24px;
+  font-size: 14px;
+  font-weight: 400;
+  padding-top: 25px;
+  font-family: "Inconsolata", sans-serif;
+  clear: both;
+}
+
+/* line 45, ../sass/_typography.scss */
+hr {
+  border-width: 4px;
+  width: 60px;
+  height: 2px;
+  background: #56c8d4;
+  margin-bottom: 0;
+  border-top: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  clear: both;
+}
+
+/* line 57, ../sass/_typography.scss */
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* line 62, ../sass/_typography.scss */
+h2 {
+  font-size: 22px;
+}
+
+/* line 66, ../sass/_typography.scss */
+h3 {
+  font-size: 20px;
+}
+
+/* line 70, ../sass/_typography.scss */
+h4 {
+  font-size: 18px;
+}
+
+/* line 74, ../sass/_typography.scss */
+h5 {
+  font-size: 16px;
+}
+
+/* line 78, ../sass/_typography.scss */
+h6 {
+  font-size: 14px;
+}
+
+/* line 82, ../sass/_typography.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  letter-spacing: 1.5pt;
+  color: #111111;
+  clear: both;
+  padding-bottom: 5px;
+}
+
+/* line 91, ../sass/_typography.scss */
+b {
+  font-weight: 900;
+}
+
+/* line 95, ../sass/_typography.scss */
+blockquote {
+  margin: 30px 0 30px;
+  padding: 20px;
+  font-size: 14px;
+  font-family: "Inconsolata", sans-serif;
+  border-left: 0;
+  line-height: 21px;
+  font-weight: 100;
+  color: #5d5d5d;
+  background: #f2f2f2 url(../img/quote-bg.png) 30px center no-repeat;
+}
+
+/* line 107, ../sass/_typography.scss */
+blockquote p {
+  display: inline;
+}
+
+/* line 111, ../sass/_typography.scss */
+ul {
+  font-family: "Montserrat", sans-serif;
+  padding-left: 25px;
+}
+
+/* line 116, ../sass/_typography.scss */
+ul li {
+  list-style-type: inherit;
+}
+
+/* line 120, ../sass/_typography.scss */
+ul.list {
+  display: block;
+  line-height: 25px;
+}
+
+/* line 125, ../sass/_typography.scss */
+ul.sublist {
+  padding-left: 35px;
+}
+
+/* line 6, ../sass/app.scss */
 #sylvesteraswin > .container-fluid {
   padding: 0;
 }

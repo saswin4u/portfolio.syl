@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'views/index', 'views/pagecomps/header', 'views/pages/error', 'views/pages/404'], function($, _, Backbone, Utils, Routes, IndexView, HeaderView, ErrorPage, NotFoundPage) {
+define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'views/index', 'views/pagecomps/header', 'views/pagecomps/menu/menu', 'views/pages/error', 'views/pages/404'], function($, _, Backbone, Utils, Routes, IndexView, HeaderView, MenuView, ErrorPage, NotFoundPage) {
     var hasInit = false;
     var AppRouter = Backbone.Router.extend({
         currentView: null,
@@ -15,8 +15,10 @@ define(['jquery', 'underscore', 'backbone', 'helpers/util', 'configs/routes', 'v
         },
         init: function() {
             if (!hasInit) {
+                //Append Menu
+                SylAppView.loadContent(MenuView);
                 //Append Header
-                SylAppView.loadContent(HeaderView);
+                SylAppView.loadContent(HeaderView, true);
                 //Append Index View
                 SylAppView.loadContent(IndexView, true);
 

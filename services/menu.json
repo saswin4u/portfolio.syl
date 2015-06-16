@@ -12,18 +12,18 @@
     },
     "menus": [{
         "name": "Home",
-        "url": "#/home"
+        "url": "!/home"
     }, {
-        "name": "AboutMe",
-        "url": "#/about"
+        "name": "About",
+        "url": "!/about"
     }, {
         "name": "Photography",
-        "url": "#/iamsyl"
+        "url": "!/iamsyl"
     }, {
         "name": "Blog",
-        "url": "#/blog"
+        "url": "!/blog"
     }, {
         "name": "Contact",
-        "url": "#/contact"
+        "url": "!/contact"
     }]
 }

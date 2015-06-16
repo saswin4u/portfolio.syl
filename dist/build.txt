@@ -74,6 +74,7 @@ js/configs.js
 js/libs/text/text.js
 js/libs/jquery/dist/jquery.js
 js/libs/underscore/underscore.js
+js/configs/underscore-private.js
 js/libs/backbone/backbone.js
 js/libs/bootstrap/dist/js/bootstrap.js
 
@@ -88,6 +89,15 @@ js/configs/routes.js
 js/views/pagecomps/canvas.js
 js/views/index.js
 js/views/pagecomps/header.js
+js/configs/url.js
+js/configs/app.js
+js/helpers/datafactory.js
+js/models/menu.js
+text!templates/item.tpl
+js/views/pagecomps/menu/item.js
+js/views/pagecomps/menu/items.js
+js/views/pagecomps/menu/nav.js
+js/views/pagecomps/menu/menu.js
 js/views/comps/button.js
 js/views/pages/error.js
 js/views/pages/404.js

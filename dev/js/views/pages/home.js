@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'backbone', 'views/index'], function($, _, Backb
 
             page.reset();
 
-            // IndexView.setLoading(true);
+            IndexView.setLoading(true);
         },
         canvasContent: function(){
             var page = this;

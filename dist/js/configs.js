@@ -2106,8 +2106,13 @@ require.config({
     shim: {
 
     },
-    maps: {
-
+    map: {
+        "*": {
+            underscore: "configs/underscore-private"
+        },
+        "configs/underscore-private": {
+            underscore: "underscore"
+        }
     },
     packages: [
 
@@ -13267,6 +13272,16 @@ return jQuery;
   }
 }.call(this));
 
+define('configs/underscore-private',['underscore'], function(_) {
+    /* Setup Mustache.js style interpolation, eg: {{ name }} */
+    _.templateSettings = {
+        evaluate:    /\{\{#([\s\S]+?)\}\}/g,
+        interpolate: /\{\{[^#\{]([\s\S]+?)[^\}]\}\}/g,
+        escape:      /\{\{\{([\s\S]+?)\}\}\}/g,
+    };
+    
+    return _.noConflict();
+});
 //     Backbone.js 1.2.1
 
 //     (c) 2010-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

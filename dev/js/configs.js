@@ -16,8 +16,13 @@ require.config({
     shim: {
 
     },
-    maps: {
-
+    map: {
+        "*": {
+            underscore: "configs/underscore-private"
+        },
+        "configs/underscore-private": {
+            underscore: "underscore"
+        }
     },
     packages: [
 
